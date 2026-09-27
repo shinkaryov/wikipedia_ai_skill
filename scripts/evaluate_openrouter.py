@@ -126,19 +126,71 @@ def run(model, prompts, output, max_turns):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--model", required=True, help="Exact OpenRouter model ID with tool support")
-    parser.add_argument("--scenario", choices=list(load(ROOT / "examples/agent_scenarios.json")), default="astronomy")
+    parser.add_argument(
+        "--model",
+        required=True,
+        help="Exact OpenRouter model ID with tool support",
+    )
+
+    source = parser.add_mutually_exclusive_group()
+    source.add_argument(
+        "--scenario",
+        help="Named scenario; defaults to astronomy when --prompt is absent",
+    )
+    source.add_argument(
+        "--prompt",
+        action="append",
+        help="Custom request; repeat for follow-ups in the same conversation",
+    )
+
     parser.add_argument("--out", required=True)
     parser.add_argument("--max-turns", type=int, default=10)
     args = parser.parse_args()
+
     try:
         if not 1 <= args.max_turns <= 20:
-            raise ResearchError("invalid_budget", "Use 1-20 turns per user message.")
-        result = run(args.model, load(ROOT / "examples/agent_scenarios.json")[args.scenario], args.out, args.max_turns)
-        print(json.dumps(result, ensure_ascii=False))
+            raise ResearchError(
+                "invalid_budget",
+                "Use 1-20 turns per user message.",
+            )
+
+        if args.prompt is not None:
+            prompts = [prompt.strip() for prompt in args.prompt]
+            if any(not prompt for prompt in prompts):
+                raise ResearchError(
+                    "empty_prompt",
+                    "Each --prompt must contain a nonempty request.",
+                )
+        else:
+            scenarios = load(ROOT / "examples/agent_scenarios.json")
+            scenario = args.scenario or "astronomy"
+            if scenario not in scenarios:
+                raise ResearchError(
+                    "unknown_scenario",
+                    "Choose a known scenario or use --prompt.",
+                    available=list(scenarios),
+                )
+            prompts = scenarios[scenario]
+
+        result = run(args.model, prompts, args.out, args.max_turns)
+
+        trace = load(result["trace"])
+        result["answers"] = [
+            event["message"]["content"]
+            for event in trace["events"]
+            if event["type"] == "model"
+            and not event["message"].get("tool_calls")
+            and event["message"].get("content")
+        ]
+
+        print(json.dumps(result, ensure_ascii=False, indent=2))
         return 0
+
     except ResearchError as exc:
-        print(json.dumps({"status": "error", "error": exc.as_dict()}, ensure_ascii=False))
+        print(json.dumps(
+            {"status": "error", "error": exc.as_dict()},
+            ensure_ascii=False,
+        ))
         return 2
 
 

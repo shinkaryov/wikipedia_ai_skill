@@ -109,6 +109,8 @@ uv run --frozen python scripts/wiki_interest.py replay --run examples/astronomy-
 
 For shared studies, copy the complete bundle under `runs/` and use its path as `--run`. Python 3.12.14 and uv 0.12.18 Docker images are pinned by digest; dependencies use `uv.lock`. Record the source revision, image ID, platform, manifest and evidence. Add `--platform linux/amd64` to both Docker build and run when matching that architecture; ARM may require emulation. Use explicit dates and saved responses: live data and relative windows can change. PDF bytes may differ due to metadata.
 
+To run your own request through OpenRouter, pass `--prompt "Your request"` instead of `--scenario` to `scripts/evaluate_openrouter.py`. This requires network access and is separate from offline replay.
+
 ## Validation and AI-assisted development
 
 AI assisted with interface design, implementation, tests and report layout. Verification used independent arithmetic, real responses, cache/network counters, rendered reports and an inexpensive model with fresh task context.
