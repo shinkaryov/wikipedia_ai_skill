@@ -1,0 +1,15 @@
+{
+  "astronomy": [
+    "We are considering an astronomy course for an educational app. Is interest in astronomy growing in Ukrainian Wikipedia over the last two years, and how trustworthy is the trend? Create a short PDF.",
+    "Add Czech Wikipedia using the same dates. Then create a new version ranked by volume, using downloaded data without new network requests."
+  ],
+  "fasting": [
+    "Compare interest growth in intermittent fasting in Polish and Czech Wikipedia over the last two years. Create a one-page PDF and explain whether the comparison is reliable."
+  ],
+  "english_learning": [
+    "We are building a language-learning app. Compare interest in learning English in Polish, Czech and Ukrainian Wikipedia. Which audiences should we research next, and why? Prepare a short report."
+  ],
+  "held_out_chess": [
+    "Compare interest in chess in English and German Wikipedia for January 2024 through December 2025. Create a PDF with the trend, limitations and a next product check."
+  ]
+}

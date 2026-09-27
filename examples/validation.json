@@ -1,0 +1,603 @@
+{
+  "recorded_at": "2026-09-26",
+  "status": "MVP validated; bounded evidence, not a statistical benchmark",
+  "environment": {
+    "python": "3.12.14",
+    "dependency_install": "uv sync --frozen",
+    "platform": "Linux; no claim of testing other operating systems"
+  },
+  "unit_and_artifact_tests": {
+    "command": "uv run --frozen python -m unittest discover -s tests -v",
+    "count": 26,
+    "result": "passed",
+    "log": "test-results.txt"
+  },
+  "model_evaluations": [
+    {
+      "model": "gpt-6-luna",
+      "selection": "explicit inexpensive-model override in the available agent runtime",
+      "fresh_context": true,
+      "scenario": "Astronomy in Ukrainian Wikipedia; two complete years; create a PDF",
+      "result": "completed after environment recovery",
+      "commands": [
+        "uv sync --frozen",
+        "uv run --frozen python scripts/wiki_interest.py discover --topic astronomy --languages uk --search-language en --cache-dir runs/astronomy-agent-cache",
+        "uv run --frozen python scripts/wiki_interest.py run --qid Q333 --languages uk --topic \"Астрономія в україномовній Вікіпедії\" --months 24 --criterion balanced --cache-dir runs/astronomy-agent-cache --out runs/astronomy-agent-01",
+        "python scripts/wiki_interest.py render --run runs/astronomy-agent-01"
+      ],
+      "observations": {
+        "run": "astronomy-agent-01",
+        "period": [
+          "2024-09",
+          "2026-08"
+        ],
+        "status": "complete_with_warnings",
+        "http_stats": {
+          "http_requests": 5,
+          "response_cache_hits": 1,
+          "month_cache_hits": 0,
+          "retries": 0
+        },
+        "metrics": [
+          {
+            "language": "uk",
+            "article": "Астрономія",
+            "status": "ok",
+            "observed_months": 24,
+            "expected_months": 24,
+            "coverage_pct": 100.0,
+            "observed_views": 23322,
+            "latest_12m_views": 6708,
+            "yoy_pct": -59.624413145539904,
+            "normalized_yoy_pct": -46.42524188764384,
+            "latest_share_per_million": 9.886450053366934,
+            "median_monthly_yoy_pct": -61.772195710074776,
+            "positive_month_pairs": 1,
+            "paired_months": 12,
+            "leave_one_pair_out_yoy_range": [
+              -61.40284360189574,
+              -57.52494340571812
+            ],
+            "peak_pair_excluded_yoy_pct": -57.52494340571812,
+            "peak_month": "2025-09",
+            "peak_share_pct": 24.478234943351225,
+            "spike_months": [
+              "2024-09"
+            ],
+            "stability": "caution",
+            "flags": [
+              "possible_spikes"
+            ]
+          }
+        ]
+      },
+      "recovery": "Initial NumPy native extension failed to map a shared-object segment in the isolated environment. The agent rendered already saved data with installed runtime dependencies. Later uv runs succeeded. Root cause was not conclusively established; do not claim a NumPy package bug was fixed."
+    },
+    {
+      "model": "gpt-6-luna",
+      "fresh_context": false,
+      "scenario": "Add Czech while preserving dates, then change criterion to volume offline",
+      "result": "passed",
+      "commands": [
+        "uv run --frozen python scripts/wiki_interest.py revise --run runs/astronomy-agent-01 --languages uk cs --out runs/astronomy-agent-02",
+        "uv run --frozen python scripts/wiki_interest.py revise --run runs/astronomy-agent-02 --criterion volume --offline --out runs/astronomy-agent-03"
+      ],
+      "observations": [
+        {
+          "run": "astronomy-agent-02",
+          "period": [
+            "2024-09",
+            "2026-08"
+          ],
+          "status": "complete_with_warnings",
+          "http_stats": {
+            "http_requests": 9,
+            "response_cache_hits": 0,
+            "month_cache_hits": 44,
+            "retries": 0
+          },
+          "metrics": [
+            {
+              "language": "uk",
+              "article": "Астрономія",
+              "status": "ok",
+              "observed_months": 24,
+              "expected_months": 24,
+              "coverage_pct": 100.0,
+              "observed_views": 23322,
+              "latest_12m_views": 6708,
+              "yoy_pct": -59.624413145539904,
+              "normalized_yoy_pct": -46.42524188764384,
+              "latest_share_per_million": 9.886450053366934,
+              "median_monthly_yoy_pct": -61.772195710074776,
+              "positive_month_pairs": 1,
+              "paired_months": 12,
+              "leave_one_pair_out_yoy_range": [
+                -61.40284360189574,
+                -57.52494340571812
+              ],
+              "peak_pair_excluded_yoy_pct": -57.52494340571812,
+              "peak_month": "2025-09",
+              "peak_share_pct": 24.478234943351225,
+              "spike_months": [
+                "2024-09"
+              ],
+              "stability": "caution",
+              "flags": [
+                "possible_spikes"
+              ]
+            },
+            {
+              "language": "cs",
+              "article": "Astronomie",
+              "status": "ok",
+              "observed_months": 24,
+              "expected_months": 24,
+              "coverage_pct": 100.0,
+              "observed_views": 15471,
+              "latest_12m_views": 6188,
+              "yoy_pct": -33.340514919745765,
+              "normalized_yoy_pct": -23.733715675633647,
+              "latest_share_per_million": 8.676102182970123,
+              "median_monthly_yoy_pct": -33.21023585294199,
+              "positive_month_pairs": 1,
+              "paired_months": 12,
+              "leave_one_pair_out_yoy_range": [
+                -36.31409186964743,
+                -30.960424710424704
+              ],
+              "peak_pair_excluded_yoy_pct": -31.34769230769231,
+              "peak_month": "2025-09",
+              "peak_share_pct": 9.857789269553976,
+              "spike_months": [],
+              "stability": "consistent",
+              "flags": []
+            }
+          ]
+        },
+        {
+          "run": "astronomy-agent-03",
+          "period": [
+            "2024-09",
+            "2026-08"
+          ],
+          "status": "complete_with_warnings",
+          "http_stats": {
+            "http_requests": 0,
+            "response_cache_hits": 3,
+            "month_cache_hits": 96,
+            "retries": 0
+          },
+          "metrics": [
+            {
+              "language": "uk",
+              "article": "Астрономія",
+              "status": "ok",
+              "observed_months": 24,
+              "expected_months": 24,
+              "coverage_pct": 100.0,
+              "observed_views": 23322,
+              "latest_12m_views": 6708,
+              "yoy_pct": -59.624413145539904,
+              "normalized_yoy_pct": -46.42524188764384,
+              "latest_share_per_million": 9.886450053366934,
+              "median_monthly_yoy_pct": -61.772195710074776,
+              "positive_month_pairs": 1,
+              "paired_months": 12,
+              "leave_one_pair_out_yoy_range": [
+                -61.40284360189574,
+                -57.52494340571812
+              ],
+              "peak_pair_excluded_yoy_pct": -57.52494340571812,
+              "peak_month": "2025-09",
+              "peak_share_pct": 24.478234943351225,
+              "spike_months": [
+                "2024-09"
+              ],
+              "stability": "caution",
+              "flags": [
+                "possible_spikes"
+              ]
+            },
+            {
+              "language": "cs",
+              "article": "Astronomie",
+              "status": "ok",
+              "observed_months": 24,
+              "expected_months": 24,
+              "coverage_pct": 100.0,
+              "observed_views": 15471,
+              "latest_12m_views": 6188,
+              "yoy_pct": -33.340514919745765,
+              "normalized_yoy_pct": -23.733715675633647,
+              "latest_share_per_million": 8.676102182970123,
+              "median_monthly_yoy_pct": -33.21023585294199,
+              "positive_month_pairs": 1,
+              "paired_months": 12,
+              "leave_one_pair_out_yoy_range": [
+                -36.31409186964743,
+                -30.960424710424704
+              ],
+              "peak_pair_excluded_yoy_pct": -31.34769230769231,
+              "peak_month": "2025-09",
+              "peak_share_pct": 9.857789269553976,
+              "spike_months": [],
+              "stability": "consistent",
+              "flags": []
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "model": "gpt-6-luna",
+      "fresh_context": true,
+      "scenario": "Held-out chess comparison in English and German, 2024-01 through 2025-12; PDF and product check",
+      "result": "passed",
+      "commands": [
+        "python scripts/wiki_interest.py discover --cache-dir runs/chess-agent-cache --topic chess --languages en de --search-language en",
+        "python scripts/wiki_interest.py run --qid Q718 --languages en de --start 2024-01 --end 2025-12 --topic \"Chess interest in English and German Wikipedia\" --out runs/chess-agent-01 --cache-dir runs/chess-agent-cache"
+      ],
+      "observations": {
+        "run": "chess-agent-01",
+        "period": [
+          "2024-01",
+          "2025-12"
+        ],
+        "status": "complete",
+        "http_stats": {
+          "http_requests": 10,
+          "response_cache_hits": 1,
+          "month_cache_hits": 0,
+          "retries": 0
+        },
+        "metrics": [
+          {
+            "language": "en",
+            "article": "Chess",
+            "status": "ok",
+            "observed_months": 24,
+            "expected_months": 24,
+            "coverage_pct": 100.0,
+            "observed_views": 3445997,
+            "latest_12m_views": 1261994,
+            "yoy_pct": -42.21647131437091,
+            "normalized_yoy_pct": -38.173888708822886,
+            "latest_share_per_million": 14.753000421437383,
+            "median_monthly_yoy_pct": -43.152479625930425,
+            "positive_month_pairs": 0,
+            "paired_months": 12,
+            "leave_one_pair_out_yoy_range": [
+              -43.965986724162995,
+              -39.74253204392587
+            ],
+            "peak_pair_excluded_yoy_pct": -41.77079349879629,
+            "peak_month": "2025-01",
+            "peak_share_pct": 10.955123399952774,
+            "spike_months": [],
+            "stability": "consistent",
+            "flags": []
+          },
+          {
+            "language": "de",
+            "article": "Schach",
+            "status": "ok",
+            "observed_months": 24,
+            "expected_months": 24,
+            "coverage_pct": 100.0,
+            "observed_views": 431821,
+            "latest_12m_views": 185762,
+            "yoy_pct": -24.50509837071597,
+            "normalized_yoy_pct": -17.825462666027992,
+            "latest_share_per_million": 20.906910578429503,
+            "median_monthly_yoy_pct": -23.519510700832576,
+            "positive_month_pairs": 0,
+            "paired_months": 12,
+            "leave_one_pair_out_yoy_range": [
+              -26.027271895305205,
+              -22.37219712469276
+            ],
+            "peak_pair_excluded_yoy_pct": -26.027271895305205,
+            "peak_month": "2025-01",
+            "peak_share_pct": 12.97466650875852,
+            "spike_months": [],
+            "stability": "consistent",
+            "flags": []
+          }
+        ]
+      },
+      "note": "Agent reported one redundant initial discovery without dedicated cache before repeating with the requested cache; final study used the dedicated cache."
+    }
+  ],
+  "model_usage": {
+    "tokens": null,
+    "cost": null,
+    "reason": "The agent runtime did not expose usage/cost in the returned evidence. No zero-cost claim is made."
+  },
+  "openrouter": {
+    "runner": "scripts/evaluate_openrouter.py",
+    "live_result": "not_run_missing_key",
+    "error_code": "missing_model_key",
+    "note": "No OPENROUTER_API_KEY in the environment. Haiku/OpenRouter results are not claimed."
+  },
+  "live_developer_scenarios": [
+    {
+      "run": "fasting-pl-cs",
+      "period": [
+        "2024-09",
+        "2026-08"
+      ],
+      "status": "complete_with_warnings",
+      "http_stats": {
+        "http_requests": 6,
+        "response_cache_hits": 0,
+        "month_cache_hits": 0,
+        "retries": 0
+      },
+      "metrics": [
+        {
+          "language": "pl",
+          "article": null,
+          "status": "missing_article",
+          "observed_months": 0,
+          "expected_months": 24,
+          "coverage_pct": 0.0,
+          "observed_views": 0,
+          "latest_12m_views": null,
+          "yoy_pct": null,
+          "normalized_yoy_pct": null,
+          "latest_share_per_million": null,
+          "median_monthly_yoy_pct": null,
+          "positive_month_pairs": null,
+          "paired_months": null,
+          "leave_one_pair_out_yoy_range": null,
+          "peak_pair_excluded_yoy_pct": null,
+          "peak_month": null,
+          "peak_share_pct": null,
+          "spike_months": [],
+          "stability": "insufficient",
+          "flags": [
+            "missing_article",
+            "incomplete_article_data",
+            "incomplete_project_data"
+          ]
+        },
+        {
+          "language": "cs",
+          "article": "Přerušovaný půst",
+          "status": "ok",
+          "observed_months": 24,
+          "expected_months": 24,
+          "coverage_pct": 100.0,
+          "observed_views": 6939,
+          "latest_12m_views": 2198,
+          "yoy_pct": -53.6384728960135,
+          "normalized_yoy_pct": -46.95696488552944,
+          "latest_share_per_million": 3.081782902095722,
+          "median_monthly_yoy_pct": -51.32422586520947,
+          "positive_month_pairs": 0,
+          "paired_months": 12,
+          "leave_one_pair_out_yoy_range": [
+            -59.4543744120414,
+            -45.46656093047846
+          ],
+          "peak_pair_excluded_yoy_pct": -59.4543744120414,
+          "peak_month": "2026-01",
+          "peak_share_pct": 21.56505914467698,
+          "spike_months": [],
+          "stability": "consistent",
+          "flags": []
+        }
+      ]
+    },
+    {
+      "run": "english-learning-coverage",
+      "period": [
+        "2024-09",
+        "2026-08"
+      ],
+      "status": "complete_with_warnings",
+      "http_stats": {
+        "http_requests": 0,
+        "response_cache_hits": 1,
+        "month_cache_hits": 0,
+        "retries": 0
+      },
+      "metrics": [
+        {
+          "language": "pl",
+          "article": null,
+          "status": "missing_article",
+          "observed_months": 0,
+          "expected_months": 24,
+          "coverage_pct": 0.0,
+          "observed_views": 0,
+          "latest_12m_views": null,
+          "yoy_pct": null,
+          "normalized_yoy_pct": null,
+          "latest_share_per_million": null,
+          "median_monthly_yoy_pct": null,
+          "positive_month_pairs": null,
+          "paired_months": null,
+          "leave_one_pair_out_yoy_range": null,
+          "peak_pair_excluded_yoy_pct": null,
+          "peak_month": null,
+          "peak_share_pct": null,
+          "spike_months": [],
+          "stability": "insufficient",
+          "flags": [
+            "missing_article",
+            "incomplete_article_data",
+            "incomplete_project_data"
+          ]
+        },
+        {
+          "language": "cs",
+          "article": null,
+          "status": "missing_article",
+          "observed_months": 0,
+          "expected_months": 24,
+          "coverage_pct": 0.0,
+          "observed_views": 0,
+          "latest_12m_views": null,
+          "yoy_pct": null,
+          "normalized_yoy_pct": null,
+          "latest_share_per_million": null,
+          "median_monthly_yoy_pct": null,
+          "positive_month_pairs": null,
+          "paired_months": null,
+          "leave_one_pair_out_yoy_range": null,
+          "peak_pair_excluded_yoy_pct": null,
+          "peak_month": null,
+          "peak_share_pct": null,
+          "spike_months": [],
+          "stability": "insufficient",
+          "flags": [
+            "missing_article",
+            "incomplete_article_data",
+            "incomplete_project_data"
+          ]
+        },
+        {
+          "language": "uk",
+          "article": null,
+          "status": "missing_article",
+          "observed_months": 0,
+          "expected_months": 24,
+          "coverage_pct": 0.0,
+          "observed_views": 0,
+          "latest_12m_views": null,
+          "yoy_pct": null,
+          "normalized_yoy_pct": null,
+          "latest_share_per_million": null,
+          "median_monthly_yoy_pct": null,
+          "positive_month_pairs": null,
+          "paired_months": null,
+          "leave_one_pair_out_yoy_range": null,
+          "peak_pair_excluded_yoy_pct": null,
+          "peak_month": null,
+          "peak_share_pct": null,
+          "spike_months": [],
+          "stability": "insufficient",
+          "flags": [
+            "missing_article",
+            "incomplete_article_data",
+            "incomplete_project_data"
+          ]
+        }
+      ]
+    },
+    {
+      "run": "english-learning-de-es",
+      "period": [
+        "2024-09",
+        "2026-08"
+      ],
+      "status": "complete",
+      "http_stats": {
+        "http_requests": 12,
+        "response_cache_hits": 0,
+        "month_cache_hits": 0,
+        "retries": 1
+      },
+      "metrics": [
+        {
+          "language": "de",
+          "article": "Englisch als Zweitsprache",
+          "status": "ok",
+          "observed_months": 24,
+          "expected_months": 24,
+          "coverage_pct": 100.0,
+          "observed_views": 2163,
+          "latest_12m_views": 871,
+          "yoy_pct": -32.585139318885446,
+          "normalized_yoy_pct": -27.243931935484234,
+          "latest_share_per_million": 0.10296608573962009,
+          "median_monthly_yoy_pct": -30.25415943656221,
+          "positive_month_pairs": 1,
+          "paired_months": 12,
+          "leave_one_pair_out_yoy_range": [
+            -34.81481481481481,
+            -30.17602682313495
+          ],
+          "peak_pair_excluded_yoy_pct": -30.53571428571429,
+          "peak_month": "2026-01",
+          "peak_share_pct": 10.677382319173363,
+          "spike_months": [],
+          "stability": "consistent",
+          "flags": []
+        },
+        {
+          "language": "es",
+          "article": "Inglés como segunda lengua",
+          "status": "ok",
+          "observed_months": 24,
+          "expected_months": 24,
+          "coverage_pct": 100.0,
+          "observed_views": 4304,
+          "latest_12m_views": 1389,
+          "yoy_pct": -52.349914236706695,
+          "normalized_yoy_pct": -39.784438458359205,
+          "latest_share_per_million": 0.21261378348643611,
+          "median_monthly_yoy_pct": -51.140839758632254,
+          "positive_month_pairs": 0,
+          "paired_months": 12,
+          "leave_one_pair_out_yoy_range": [
+            -53.64262413918086,
+            -50.116550116550115
+          ],
+          "peak_pair_excluded_yoy_pct": -52.55670895809303,
+          "peak_month": "2025-10",
+          "peak_share_pct": 11.159107271418286,
+          "spike_months": [],
+          "stability": "consistent",
+          "flags": []
+        }
+      ]
+    }
+  ],
+  "independent_source_check": {
+    "uk": {
+      "previous_12m": 16614,
+      "latest_12m": 6708
+    },
+    "cs": {
+      "previous_12m": 9283,
+      "latest_12m": 6188
+    },
+    "result": "Annual sums, raw YoY and normalized YoY independently recalculated from copied API source bodies and matched metrics to 1e-9."
+  },
+  "offline_replay": {
+    "result": "metrics and monthly series exactly equal to original astronomy study",
+    "http_requests": 0
+  },
+  "issues_found_and_addressed": [
+    "A missing all-null series initially exposed observed_views=0; changed to null.",
+    "PDF rerender did not move a data_ready manifest to complete; fixed and regression tested.",
+    "Rendering import/environment errors now preserve data and record an actionable report_failed state.",
+    "404 bodies are retained as source evidence rather than replaced by an empty synthetic response.",
+    "Source links and observed-month coverage added to the standalone PDF.",
+    "YoY explanation clarified: final 12 months versus preceding 12, not first-to-last-month change.",
+    "Inherited report titles are reset to the concept label when languages change unless the user supplies a new title."
+  ],
+  "limitations": [
+    "One current-title article per concept/language; title histories and redirect views are not merged.",
+    "Stability thresholds are heuristics, not calibrated confidence probabilities.",
+    "No inference of country demand, unique users, revenue or willingness to pay.",
+    "English PDF; multilingual conversational explanation is the agent responsibility.",
+    "Two fresh inexpensive-model sessions plus a follow-up are a small sample, not a general reliability estimate."
+  ],
+  "source_sha256": {
+    "SKILL.md": "7cde9ce648c03353fa0d601754c37ad5d5993de1e3aaaf3fb72c8f121c052be6",
+    "pyproject.toml": "9740f0e86052eb3291aa3f4c47dc5fe4ddd87b50f01e784b54521a96905a7554",
+    "uv.lock": "fa87ca649ecd7ed1fa2b87ce2c1eea13c5538f3d4e071cbde405416845e5dc9b",
+    "scripts/analysis.py": "536fb7ee10d834e1a6e11095a84839fd0736066d3bb0244dd15bd12e1a2e5979",
+    "scripts/core.py": "742b41387de86fd68fad648bc8207cb909c4878bf669590537025a001fab24a0",
+    "scripts/evaluate_openrouter.py": "9514ac8605b3626eed14143636a68b2d2f173261cf7a84d6e2abea6548a149b0",
+    "scripts/report.py": "01247896089bdb06cb8f14baf3685bfe9ed69c6471e8800c33a8e30d9af25e1e",
+    "scripts/resolver.py": "be28281e5e9275646cd4d16e535417eb3190f231008c468cf5ebb439c8f15967",
+    "scripts/wiki_interest.py": "fe7fa4c4d3e173758b2f038f4cb252639629b1b5807aad94b533a53d69cceee1",
+    "tests/test_artifacts.py": "c9bb71d4b12f08a6f48b93f0163b5af2d20b3c6e7aa2b2f7861920eb8e98fbf5",
+    "tests/test_research.py": "d41ee281e916a675c8d00a847d469032b5a2a1d8f5ed9656a26fb940294059f5"
+  }
+}

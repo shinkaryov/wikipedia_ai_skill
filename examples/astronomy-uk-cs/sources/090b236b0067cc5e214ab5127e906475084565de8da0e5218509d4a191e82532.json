@@ -1,0 +1,38 @@
+{
+  "url": "https://uk.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&prop=info%7Cpageprops%7Crevisions&redirects=1&rvdir=newer&rvlimit=1&rvprop=timestamp&titles=%D0%90%D1%81%D1%82%D1%80%D0%BE%D0%BD%D0%BE%D0%BC%D1%96%D1%8F",
+  "fetched_at": "2026-09-26T11:06:46.234603+00:00",
+  "http_status": 200,
+  "sha256": "84ac7744cfcdda34e6cc903fef65a51890ca5ca19d8e01e43355cb99375a2897",
+  "data": {
+    "continue": {
+      "rvcontinue": "20040227160846|880",
+      "continue": "||info|pageprops"
+    },
+    "query": {
+      "pages": [
+        {
+          "pageid": 827,
+          "ns": 0,
+          "title": "Астрономія",
+          "contentmodel": "wikitext",
+          "pagelanguage": "uk",
+          "pagelanguagehtmlcode": "uk",
+          "pagelanguagedir": "ltr",
+          "touched": "2026-09-24T22:53:48Z",
+          "lastrevid": 48885850,
+          "length": 152992,
+          "pageprops": {
+            "defaultsort": "Астрономія",
+            "page_image_free": "Crab_Nebula.jpg",
+            "wikibase_item": "Q333"
+          },
+          "revisions": [
+            {
+              "timestamp": "2004-02-26T16:27:52Z"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

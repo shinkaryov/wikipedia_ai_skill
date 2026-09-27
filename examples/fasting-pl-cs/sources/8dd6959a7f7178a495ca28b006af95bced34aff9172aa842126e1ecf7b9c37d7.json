@@ -1,0 +1,34 @@
+{
+  "url": "https://www.wikidata.org/w/api.php?action=wbgetentities&format=json&ids=Q1666254&languages=en&props=labels%7Cdescriptions%7Csitelinks&sitefilter=plwiki%7Ccswiki",
+  "fetched_at": "2026-09-23T19:50:25.789819+00:00",
+  "http_status": 200,
+  "sha256": "3e48149fef8a75037aaea1804e3b7528389f3153d8842d9c9685fdaa8aa5b24e",
+  "data": {
+    "entities": {
+      "Q1666254": {
+        "type": "item",
+        "id": "Q1666254",
+        "labels": {
+          "en": {
+            "language": "en",
+            "value": "intermittent fasting"
+          }
+        },
+        "descriptions": {
+          "en": {
+            "language": "en",
+            "value": "a diet that cycles between a period of fasting and non-fasting"
+          }
+        },
+        "sitelinks": {
+          "cswiki": {
+            "site": "cswiki",
+            "title": "Přerušovaný půst",
+            "badges": []
+          }
+        }
+      }
+    },
+    "success": 1
+  }
+}

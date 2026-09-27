@@ -1,0 +1,26 @@
+{
+  "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/aggregate/uk.wikipedia.org/all-access/user/monthly/2026070100/2026083100",
+  "fetched_at": "2026-09-26T11:07:05.719208+00:00",
+  "http_status": 200,
+  "sha256": "7511684830c4a06817e8473ff404d6941feb7f21d8a9c7db425a9b5c3e0f3633",
+  "data": {
+    "items": [
+      {
+        "project": "uk.wikipedia",
+        "access": "all-access",
+        "agent": "user",
+        "granularity": "monthly",
+        "timestamp": "2026070100",
+        "views": 52999047
+      },
+      {
+        "project": "uk.wikipedia",
+        "access": "all-access",
+        "agent": "user",
+        "granularity": "monthly",
+        "timestamp": "2026080100",
+        "views": 50720483
+      }
+    ]
+  }
+}

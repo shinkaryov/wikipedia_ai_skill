@@ -1,0 +1,36 @@
+{
+  "url": "https://cs.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&prop=info%7Cpageprops%7Crevisions&redirects=1&rvdir=newer&rvlimit=1&rvprop=timestamp&titles=P%C5%99eru%C5%A1ovan%C3%BD+p%C5%AFst",
+  "fetched_at": "2026-09-23T19:50:35.010495+00:00",
+  "http_status": 200,
+  "sha256": "e02b1bf77a69208ddda079327832240efb238fa79ca1d0da44860ad532d52c5b",
+  "data": {
+    "continue": {
+      "rvcontinue": "20201028165809|19113864",
+      "continue": "||info|pageprops"
+    },
+    "query": {
+      "pages": [
+        {
+          "pageid": 1632302,
+          "ns": 0,
+          "title": "Přerušovaný půst",
+          "contentmodel": "wikitext",
+          "pagelanguage": "cs",
+          "pagelanguagehtmlcode": "cs",
+          "pagelanguagedir": "ltr",
+          "touched": "2026-09-15T12:20:42Z",
+          "lastrevid": 25947007,
+          "length": 7148,
+          "pageprops": {
+            "wikibase_item": "Q1666254"
+          },
+          "revisions": [
+            {
+              "timestamp": "2020-10-28T12:14:45Z"
+            }
+          ]
+        }
+      ]
+    }
+  }
+}

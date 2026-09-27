@@ -1,0 +1,33 @@
+test_five_language_report_has_one_page_and_sources (test_artifacts.ArtifactTests.test_five_language_report_has_one_page_and_sources) ... /root/.codex/skills/remote-skills/wiki-interest-research/.venv/lib/python3.12/site-packages/matplotlib/dates.py:328: DeprecationWarning: The 'generic' unit for NumPy timedelta is deprecated, and will raise an error in the future. This includes implicit conversion of bare integers (e.g. `+ 1`). Please use a specific unit instead.
+  NaT_int = np.datetime64('NaT').astype(np.int64)
+ok
+test_model_tools_cannot_escape_output_or_run_shell (test_artifacts.ArtifactTests.test_model_tools_cannot_escape_output_or_run_shell) ... ok
+test_render_failure_and_success_update_manifest (test_artifacts.ArtifactTests.test_render_failure_and_success_update_manifest) ... ok
+test_annual_share_is_ratio_of_sums (test_research.AnalysisTests.test_annual_share_is_ratio_of_sums) ... ok
+test_consistent_growth_and_decline (test_research.AnalysisTests.test_consistent_growth_and_decline) ... ok
+test_growth_and_season_matching (test_research.AnalysisTests.test_growth_and_season_matching) ... ok
+test_insufficient_history_never_annualized (test_research.AnalysisTests.test_insufficient_history_never_annualized) ... ok
+test_longer_series_summary_uses_last_24 (test_research.AnalysisTests.test_longer_series_summary_uses_last_24) ... ok
+test_manual_mapping_is_not_automatically_ranked (test_research.AnalysisTests.test_manual_mapping_is_not_automatically_ranked) ... ok
+test_missing_denominator_retains_absolute_metrics (test_research.AnalysisTests.test_missing_denominator_retains_absolute_metrics) ... ok
+test_missing_not_zero (test_research.AnalysisTests.test_missing_not_zero) ... ok
+test_new_article_with_numeric_zeros_is_not_comparable (test_research.AnalysisTests.test_new_article_with_numeric_zeros_is_not_comparable) ... ok
+test_project_growth_cannot_masquerade_as_topic_growth (test_research.AnalysisTests.test_project_growth_cannot_masquerade_as_topic_growth) ... ok
+test_single_spike_does_not_make_shortlist (test_research.AnalysisTests.test_single_spike_does_not_make_shortlist) ... ok
+test_zero_baseline_is_undefined (test_research.AnalysisTests.test_zero_baseline_is_undefined) ... ok
+test_invalid_and_duplicate_counts_rejected (test_research.ClientTests.test_invalid_and_duplicate_counts_rejected) ... ok
+test_missing_rows_and_404_are_not_zero (test_research.ClientTests.test_missing_rows_and_404_are_not_zero) ... ok
+test_notfound_retains_original_error_evidence (test_research.ClientTests.test_notfound_retains_original_error_evidence) ... ok
+test_overlap_and_offline_reuse_without_network (test_research.ClientTests.test_overlap_and_offline_reuse_without_network) ... ok
+test_response_checksum_detects_modified_cache (test_research.ClientTests.test_response_checksum_detects_modified_cache) ... ok
+test_retry_after_and_no_retry_for_forbidden (test_research.ClientTests.test_retry_after_and_no_retry_for_forbidden) ... ok
+test_default_period_is_complete (test_research.InputAndMappingTests.test_default_period_is_complete) ... ok
+test_disambiguation_is_rejected (test_research.InputAndMappingTests.test_disambiguation_is_rejected) ... ok
+test_no_sitelink_stays_missing (test_research.InputAndMappingTests.test_no_sitelink_stays_missing) ... ok
+test_override_requires_explanation (test_research.InputAndMappingTests.test_override_requires_explanation) ... ok
+test_reject_current_month_and_pre_api_dates (test_research.InputAndMappingTests.test_reject_current_month_and_pre_api_dates) ... ok
+
+----------------------------------------------------------------------
+Ran 26 tests in 1.019s
+
+OK

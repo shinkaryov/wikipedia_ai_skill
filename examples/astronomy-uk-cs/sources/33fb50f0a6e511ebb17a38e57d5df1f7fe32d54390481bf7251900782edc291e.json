@@ -1,0 +1,118 @@
+{
+  "url": "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/cs.wikipedia.org/all-access/user/Astronomie/monthly/2025090100/2026083100",
+  "fetched_at": "2026-09-26T11:07:18.718661+00:00",
+  "http_status": 200,
+  "sha256": "0208adc73383b0a34529ba4133ad39aca33cd8b24a67aabb987bf49930b6df34",
+  "data": {
+    "items": [
+      {
+        "project": "cs.wikipedia",
+        "article": "Astronomie",
+        "granularity": "monthly",
+        "timestamp": "2025090100",
+        "access": "all-access",
+        "agent": "user",
+        "views": 610
+      },
+      {
+        "project": "cs.wikipedia",
+        "article": "Astronomie",
+        "granularity": "monthly",
+        "timestamp": "2025100100",
+        "access": "all-access",
+        "agent": "user",
+        "views": 545
+      },
+      {
+        "project": "cs.wikipedia",
+        "article": "Astronomie",
+        "granularity": "monthly",
+        "timestamp": "2025110100",
+        "access": "all-access",
+        "agent": "user",
+        "views": 606
+      },
+      {
+        "project": "cs.wikipedia",
+        "article": "Astronomie",
+        "granularity": "monthly",
+        "timestamp": "2025120100",
+        "access": "all-access",
+        "agent": "user",
+        "views": 563
+      },
+      {
+        "project": "cs.wikipedia",
+        "article": "Astronomie",
+        "granularity": "monthly",
+        "timestamp": "2026010100",
+        "access": "all-access",
+        "agent": "user",
+        "views": 589
+      },
+      {
+        "project": "cs.wikipedia",
+        "article": "Astronomie",
+        "granularity": "monthly",
+        "timestamp": "2026020100",
+        "access": "all-access",
+        "agent": "user",
+        "views": 466
+      },
+      {
+        "project": "cs.wikipedia",
+        "article": "Astronomie",
+        "granularity": "monthly",
+        "timestamp": "2026030100",
+        "access": "all-access",
+        "agent": "user",
+        "views": 527
+      },
+      {
+        "project": "cs.wikipedia",
+        "article": "Astronomie",
+        "granularity": "monthly",
+        "timestamp": "2026040100",
+        "access": "all-access",
+        "agent": "user",
+        "views": 540
+      },
+      {
+        "project": "cs.wikipedia",
+        "article": "Astronomie",
+        "granularity": "monthly",
+        "timestamp": "2026050100",
+        "access": "all-access",
+        "agent": "user",
+        "views": 535
+      },
+      {
+        "project": "cs.wikipedia",
+        "article": "Astronomie",
+        "granularity": "monthly",
+        "timestamp": "2026060100",
+        "access": "all-access",
+        "agent": "user",
+        "views": 412
+      },
+      {
+        "project": "cs.wikipedia",
+        "article": "Astronomie",
+        "granularity": "monthly",
+        "timestamp": "2026070100",
+        "access": "all-access",
+        "agent": "user",
+        "views": 462
+      },
+      {
+        "project": "cs.wikipedia",
+        "article": "Astronomie",
+        "granularity": "monthly",
+        "timestamp": "2026080100",
+        "access": "all-access",
+        "agent": "user",
+        "views": 333
+      }
+    ]
+  }
+}

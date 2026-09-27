@@ -1,0 +1,14 @@
+interface:
+  display_name: Wikipedia Interest Research
+  short_description: Compare topic interest across Wikipedia languages
+  default_prompt: Use $wiki-interest-research to compare topic interest across Wikipedia
+    languages and create an evidence-based PDF brief.
+  icon_small: assets/icon.svg
+  icon_large: assets/icon.svg
+policy:
+  products:
+  - chatgpt
+  - codex
+  - api
+  - atlas
+  allow_implicit_invocation: true

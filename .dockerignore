@@ -1,0 +1,16 @@
+.git
+.venv
+.cache
+runs
+**/__pycache__
+**/*.pyc
+
+.env
+.env.*
+
+examples/*
+!examples/astronomy-uk-cs/
+!examples/fasting-pl-cs/
+!examples/agent_scenarios.json
+!examples/validation.json
+!examples/test-results.txt
