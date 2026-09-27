@@ -3,6 +3,7 @@ __pycache__/
 *.pyc
 .cache/
 runs/
+.idea/
 
 .env.*
 !.env.example
