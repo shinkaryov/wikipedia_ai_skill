@@ -17,7 +17,10 @@ COPY scripts/ scripts/
 COPY references/ references/
 COPY examples/ examples/
 COPY SKILL.md README.md ./
-RUN mkdir -p /app/.cache /app/runs && chown -R 1000:1000 /app/.cache /app/runs
+RUN chmod -R a+rX /app \
+    && mkdir -p /app/.cache /app/runs \
+    && chown -R 1000:1000 /app/.cache /app/runs
+
 USER 1000:1000
 ENTRYPOINT ["/app/.venv/bin/python", "/app/scripts/wiki_interest.py"]
 CMD ["--help"]
