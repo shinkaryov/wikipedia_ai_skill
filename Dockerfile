@@ -16,7 +16,7 @@ RUN uv sync --frozen --no-dev --no-install-project --no-cache
 COPY scripts/ scripts/
 COPY references/ references/
 COPY examples/ examples/
-COPY SKILL.md ./
+COPY SKILL.md README.md ./
 RUN mkdir -p /app/.cache /app/runs && chown -R 1000:1000 /app/.cache /app/runs
 USER 1000:1000
 ENTRYPOINT ["/app/.venv/bin/python", "/app/scripts/wiki_interest.py"]

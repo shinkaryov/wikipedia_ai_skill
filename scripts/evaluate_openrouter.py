@@ -16,7 +16,7 @@ from core import ROOT, ResearchError, dump, load, now
 
 TOOLS = [
     {"type": "function", "function": {"name": "wiki_cli", "description": "Execute the Wikipedia Interest Research CLI. Provide arguments starting with discover, search-pages, run, revise, render or replay. No shell or python prefix. Use relative run names for --out and --run.", "parameters": {"type": "object", "properties": {"argv": {"type": "array", "items": {"type": "string"}}}, "required": ["argv"], "additionalProperties": False}}},
-    {"type": "function", "function": {"name": "read_reference", "description": "Read one named skill reference when needed.", "parameters": {"type": "object", "properties": {"name": {"type": "string", "enum": ["methodology.md", "mvp.md", "development.md", "evaluation.md"]}}, "required": ["name"], "additionalProperties": False}}},
+    {"type": "function", "function": {"name": "read_reference", "description": "Read one named skill reference when needed.", "parameters": {"type": "object", "properties": {"name": {"type": "string", "enum": ["methodology.md", "README.md"]}}, "required": ["name"], "additionalProperties": False}}},
 ]
 
 
@@ -30,10 +30,15 @@ def local_path(value, base):
 
 def execute_tool(name, arguments, output):
     if name == "read_reference":
-        allowed = {"methodology.md", "mvp.md", "development.md", "evaluation.md"}
-        if arguments.get("name") not in allowed:
+        allowed = {"methodology.md", "README.md"}
+        if arguments["name"] not in allowed:
             raise ResearchError("invalid_reference", "Unknown reference.")
-        return {"text": (ROOT / "references" / arguments["name"]).read_text(encoding="utf-8")}
+        path = (
+            ROOT / "README.md"
+            if arguments["name"] == "README.md"
+            else ROOT / "references" / arguments["name"]
+        )
+        return {"text": path.read_text(encoding="utf-8")}
     argv = arguments.get("argv")
     if name != "wiki_cli" or not isinstance(argv, list) or not argv or not all(isinstance(a, str) for a in argv) or argv[0] not in {"discover", "search-pages", "run", "revise", "render", "replay"}:
         raise ResearchError("invalid_tool", "Use wiki_cli with a supported subcommand and string argument array.")
@@ -116,7 +121,7 @@ def run(model, prompts, output, max_turns):
     finally:
         trace["elapsed_seconds"] = round(time.monotonic() - t0, 2)
         dump(output / "trace.json", trace)
-    return {"status": trace["status"], "trace": str(output / "trace.json"), "note": "Completion is not a pass judgement: review outputs using references/evaluation.md."}
+    return {"status": trace["status"], "trace": str(output / "trace.json"), "note": "Completion is not a pass judgement: review outputs using README.md."}
 
 
 def main():
