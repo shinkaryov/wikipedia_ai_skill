@@ -1,15 +1,18 @@
 #!/usr/bin/env python3
-"""Optional, reproducible inexpensive-model evaluation. No API key embedded."""
+"""Run custom research prompts or evaluation scenarios through OpenRouter."""
 from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import subprocess
 import sys
 import time
 import urllib.error
 import urllib.request
+from datetime import datetime, timezone
+from email.utils import parsedate_to_datetime
 from pathlib import Path
 
 from core import ROOT, ResearchError, dump, load, now
@@ -31,14 +34,9 @@ def local_path(value, base):
 def execute_tool(name, arguments, output):
     if name == "read_reference":
         allowed = {"methodology.md", "README.md"}
-        if arguments["name"] not in allowed:
+        if arguments.get("name") not in allowed:
             raise ResearchError("invalid_reference", "Unknown reference.")
-        path = (
-            ROOT / "README.md"
-            if arguments["name"] == "README.md"
-            else ROOT / "references" / arguments["name"]
-        )
-        return {"text": path.read_text(encoding="utf-8")}
+        return {"text": ((ROOT / "README.md") if arguments["name"] == "README.md" else (ROOT / "references" / arguments["name"])).read_text(encoding="utf-8")}
     argv = arguments.get("argv")
     if name != "wiki_cli" or not isinstance(argv, list) or not argv or not all(isinstance(a, str) for a in argv) or argv[0] not in {"discover", "search-pages", "run", "revise", "render", "replay"}:
         raise ResearchError("invalid_tool", "Use wiki_cli with a supported subcommand and string argument array.")
@@ -59,15 +57,52 @@ def execute_tool(name, arguments, output):
     process = subprocess.run([sys.executable, str(ROOT / "scripts/wiki_interest.py"), *argv], cwd=ROOT, capture_output=True, text=True, timeout=300)
     return {"argv": argv, "returncode": process.returncode, "stdout": process.stdout[-30000:], "stderr": process.stderr[-3000:]}
 
-
 def completion(model, messages, key):
     body = {"model": model, "messages": messages, "tools": TOOLS, "tool_choice": "auto", "max_tokens": 3000, "provider": {"require_parameters": True}}
     req = urllib.request.Request("https://openrouter.ai/api/v1/chat/completions", data=json.dumps(body).encode(), headers={"Content-Type": "application/json", "Authorization": "Bearer " + key, "X-Title": "WikiInterestResearch-Evaluation"})
-    try:
-        with urllib.request.urlopen(req, timeout=60) as response:
-            value = json.load(response)
-    except urllib.error.HTTPError as exc:
-        raise ResearchError("model_http_error", "OpenRouter request failed; inspect account access or retry later.", status=exc.code) from exc
+    for attempt in range(1, 4):
+        try:
+            with urllib.request.urlopen(req, timeout=60) as response:
+                value = json.load(response)
+            break
+        except urllib.error.HTTPError as exc:
+            try:
+                payload = json.loads(exc.read(16384))
+                error = payload.get("error", {}) if isinstance(payload, dict) else {}
+                error = error if isinstance(error, dict) else {}
+            except (ValueError, UnicodeError):
+                error = {}
+            message = str(error.get("message") or "OpenRouter rejected the request.").replace(key, "[redacted]")[:600]
+            metadata = error.get("metadata")
+            provider = metadata.get("provider_name") if isinstance(metadata, dict) else None
+            retry_after = None
+            header = exc.headers.get("Retry-After") if exc.headers else None
+            if header:
+                try:
+                    retry_after = float(header)
+                except ValueError:
+                    try:
+                        date = parsedate_to_datetime(header)
+                        retry_after = (date - datetime.now(timezone.utc)).total_seconds()
+                    except (ValueError, TypeError, OverflowError):
+                        pass
+                if retry_after is not None:
+                    retry_after = max(0, retry_after) if math.isfinite(retry_after) else None
+            delay = retry_after if retry_after is not None else 2 ** attempt
+            retryable = exc.code == 429 or 500 <= exc.code <= 599
+            if retryable and attempt < 3 and delay <= 60:
+                print(json.dumps({"status": "retrying", "http_status": exc.code,
+                                  "attempt": attempt, "wait_seconds": delay}), file=sys.stderr, flush=True)
+                time.sleep(delay)
+                continue
+            hints = {401: "Check OPENROUTER_API_KEY.", 402: "Check available credits.",
+                     403: "Check account and provider access.",
+                     404: "Check the model ID and availability of a tool-capable endpoint.",
+                     429: "Retry later or choose another available provider/model."}
+            raise ResearchError("model_http_error", message, status=exc.code, attempts=attempt,
+                                provider=str(provider).replace(key, "[redacted]")[:120] if provider else None,
+                                retry_after_seconds=retry_after,
+                                hint=hints.get(exc.code, "Retry later if the provider is unavailable.")) from exc
     if "choices" not in value or not value["choices"]:
         raise ResearchError("model_response_error", "No model completion received.")
     return value
@@ -84,7 +119,9 @@ def run(model, prompts, output, max_turns):
     system = (f"Today is {now()[:10]}. Fulfill the user's request using the following skill. "
               "Dependencies are installed. Execute its CLI through wiki_cli (argument array, no python or shell prefix). "
               "Use relative run names. The tool manages a shared cache for this conversation. "
-              "Use read_reference if needed. Reply concisely with grounded findings and output paths.\n\n" + (ROOT / "SKILL.md").read_text())
+              "Skip environment setup and do not read README.md for research; use methodology.md only when needed. "
+              "Distinguish language editions from countries and observed trends from unsupported causes. "
+              "Reply concisely with grounded findings and output paths.\n\n" + (ROOT / "SKILL.md").read_text())
     messages = [{"role": "system", "content": system}]
     trace = {"requested_model": model, "started_at": now(), "prompts": prompts, "events": [], "status": "running"}
     t0 = time.monotonic()
@@ -126,54 +163,27 @@ def run(model, prompts, output, max_turns):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument(
-        "--model",
-        required=True,
-        help="Exact OpenRouter model ID with tool support",
-    )
-
+    parser.add_argument("--model", required=True, help="Exact OpenRouter model ID with tool support")
     source = parser.add_mutually_exclusive_group()
-    source.add_argument(
-        "--scenario",
-        help="Named scenario; defaults to astronomy when --prompt is absent",
-    )
-    source.add_argument(
-        "--prompt",
-        action="append",
-        help="Custom request; repeat for follow-ups in the same conversation",
-    )
-
+    source.add_argument("--scenario", help="Named scenario; defaults to astronomy when --prompt is absent")
+    source.add_argument("--prompt", action="append", help="Custom request; repeat for sequential follow-ups in the same conversation")
     parser.add_argument("--out", required=True)
     parser.add_argument("--max-turns", type=int, default=10)
     args = parser.parse_args()
-
     try:
         if not 1 <= args.max_turns <= 20:
-            raise ResearchError(
-                "invalid_budget",
-                "Use 1-20 turns per user message.",
-            )
-
+            raise ResearchError("invalid_budget", "Use 1-20 turns per user message.")
         if args.prompt is not None:
             prompts = [prompt.strip() for prompt in args.prompt]
             if any(not prompt for prompt in prompts):
-                raise ResearchError(
-                    "empty_prompt",
-                    "Each --prompt must contain a nonempty request.",
-                )
+                raise ResearchError("empty_prompt", "Each --prompt must contain a nonempty request.")
         else:
             scenarios = load(ROOT / "examples/agent_scenarios.json")
             scenario = args.scenario or "astronomy"
             if scenario not in scenarios:
-                raise ResearchError(
-                    "unknown_scenario",
-                    "Choose a known scenario or use --prompt.",
-                    available=list(scenarios),
-                )
+                raise ResearchError("unknown_scenario", "Choose a known scenario or use --prompt.", available=list(scenarios))
             prompts = scenarios[scenario]
-
         result = run(args.model, prompts, args.out, args.max_turns)
-
         trace = load(result["trace"])
         result["answers"] = [
             event["message"]["content"]
@@ -182,15 +192,10 @@ def main():
             and not event["message"].get("tool_calls")
             and event["message"].get("content")
         ]
-
         print(json.dumps(result, ensure_ascii=False, indent=2))
         return 0
-
     except ResearchError as exc:
-        print(json.dumps(
-            {"status": "error", "error": exc.as_dict()},
-            ensure_ascii=False,
-        ))
+        print(json.dumps({"status": "error", "error": exc.as_dict()}, ensure_ascii=False))
         return 2
 
 

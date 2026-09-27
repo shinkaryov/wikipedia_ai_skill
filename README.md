@@ -109,8 +109,6 @@ uv run --frozen python scripts/wiki_interest.py replay --run examples/astronomy-
 
 For shared studies, copy the complete bundle under `runs/` and use its path as `--run`. Python 3.12.14 and uv 0.12.18 Docker images are pinned by digest; dependencies use `uv.lock`. Record the source revision, image ID, platform, manifest and evidence. Add `--platform linux/amd64` to both Docker build and run when matching that architecture; ARM may require emulation. Use explicit dates and saved responses: live data and relative windows can change. PDF bytes may differ due to metadata.
 
-To run your own request through OpenRouter, pass `--prompt "Your request"` instead of `--scenario` to `scripts/evaluate_openrouter.py`. This requires network access and is separate from offline replay.
-
 ## Validation and AI-assisted development
 
 AI assisted with interface design, implementation, tests and report layout. Verification used independent arithmetic, real responses, cache/network counters, rendered reports and an inexpensive model with fresh task context.
@@ -128,6 +126,10 @@ The optional OpenRouter runner requires a tool-capable model and a key in `.env`
 ```bash
 uv run --env-file .env --frozen python scripts/evaluate_openrouter.py --model anthropic/claude-haiku-4.5 --scenario astronomy --out runs/openrouter-astronomy
 ```
+
+To run your own request, replace `--scenario astronomy` with `--prompt "Your research question"`; repeat `--prompt` for follow-ups.
+
+The runner makes at most three attempts on HTTP 429/5xx, respecting `Retry-After`; waits above 60 seconds are returned to the caller. Other HTTP errors fail immediately with provider details when available.
 
 Check current model availability, tool support and pricing before use. Inspect traces: success requires executed tools, correct scope, preserved gaps, a one-page PDF, grounded numbers, explained limitations and cache reuse. Clarification or insufficient evidence can be valid outcomes. Record model identity, commands, artifacts, duration, requests and provider-reported usage/cost. Planned scenarios are not completed tests.
 
