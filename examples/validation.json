@@ -96,7 +96,7 @@
             "month_cache_hits": 44,
             "retries": 0
           },
-          "metrics": [
+                    "metrics": [
             {
               "language": "uk",
               "article": "Астрономія",
@@ -229,8 +229,7 @@
         }
       ]
     },
-    {
-      "model": "gpt-6-luna",
+    {      "model": "gpt-6-luna",
       "fresh_context": true,
       "scenario": "Held-out chess comparison in English and German, 2024-01 through 2025-12; PDF and product check",
       "result": "passed",
@@ -389,7 +388,7 @@
           "flags": []
         }
       ]
-    },
+          },
     {
       "run": "english-learning-coverage",
       "period": [
@@ -527,7 +526,7 @@
           "stability": "consistent",
           "flags": []
         },
-        {
+                {
           "language": "es",
           "article": "Inglés como segunda lengua",
           "status": "ok",
@@ -599,5 +598,134 @@
     "scripts/wiki_interest.py": "fe7fa4c4d3e173758b2f038f4cb252639629b1b5807aad94b533a53d69cceee1",
     "tests/test_artifacts.py": "c9bb71d4b12f08a6f48b93f0163b5af2d20b3c6e7aa2b2f7861920eb8e98fbf5",
     "tests/test_research.py": "d41ee281e916a675c8d00a847d469032b5a2a1d8f5ed9656a26fb940294059f5"
+  },
+  "documentation_ab_2026_09_27": {
+    "model": "gpt-6-luna",
+    "reasoning_effort": "low",
+    "design": {
+      "model": "gpt-6-luna",
+      "variants": [
+        "split",
+        "merged"
+      ],
+      "scenarios": [
+        "replay",
+        "ranking"
+      ],
+      "readme_identical_in_both": true,
+      "code_hashes": {
+        "core.py": "742b41387de86fd68fad648bc8207cb909c4878bf669590537025a001fab24a0",
+        "wiki_interest.py": "fe7fa4c4d3e173758b2f038f4cb252639629b1b5807aad94b533a53d69cceee1",
+        "report.py": "01247896089bdb06cb8f14baf3685bfe9ed69c6471e8800c33a8e30d9af25e1e",
+        "evaluate_openrouter.py": "2f996152ccb06cf9389456094a48a9bf914478bc4152231309d7e004301e3b62",
+        "resolver.py": "be28281e5e9275646cd4d16e535417eb3190f231008c468cf5ebb439c8f15967",
+        "analysis.py": "536fb7ee10d834e1a6e11095a84839fd0736066d3bb0244dd15bd12e1a2e5979"
+      },
+      "note": "Fresh isolated directories; shared preinstalled dependencies; supplied identical source bundles; no expected answers in agent prompts."
+    },
+    "artifact_reviews": [
+      {
+        "case": "merged-ranking",
+        "artifact_check": "passed",
+        "criterion": "growth",
+        "http_requests": 0,
+        "pdf_pages": 1,
+        "metrics_match": true,
+        "cache_inside_case": false,
+        "command_journal": "# Сеанс\n\nЗапит: для збереженого `examples/astronomy-uk-cs` змінити критерій ранжування на `growth` без завантаження даних, створити новий звіт і пояснити результат; додати цей журнал команд.\n\nКоманди виконано з каталогу навички; Python — `.venv/bin/python`.\n\n1. `pwd && rg --files -g 'SKILL.md' -g '*.md' -g '*.json' -g '*.csv' -g '*.py' -g '*.yaml' -g '*.yml' -g '*.toml' -g '*.ipynb' -g '*.txt' -g '*.parquet' -g '*.xlsx' -g '*.html' -g '*.png' -g '*.svg'`\n2. `cat SKILL.md && cat README.md && cat references/methodology.md`\n3. `cat examples/astronomy-uk-cs/manifest.json && cat examples/astronomy-uk-cs/metrics.json && cat examples/astronomy-uk-cs/brief.md && sed -n '1,240p' scripts/wiki_interest.py`\n4. `mkdir -p runs && .venv/bin/python scripts/wiki_interest.py revise --run examples/astronomy-uk-cs --criterion growth --offline --out runs/astronomy-growth`\n5. `cat runs/astronomy-growth/manifest.json && cat runs/astronomy-growth/brief.md && cat runs/astronomy-growth/metrics.json`\n\nПідсумок: статус `complete_with_warnings`; період 2024-09—2026-08; criterion `growth`; 0 HTTP-запитів, 3 влучання у кеш відповідей, 96 у кеш місячних даних, 0 повторів. Звіт і візуалізації в `runs/astronomy-growth/`.\n\nДокументи прочитано: `SKILL.md`, `README.md`, `references/methodology.md`, `examples/astronomy-uk-cs/manifest.json`, `examples/astronomy-uk-cs/metrics.json`, `examples/astronomy-uk-cs/brief.md`, `scripts/wiki_interest.py`, а також згенеровані `runs/astronomy-growth/manifest.json`, `runs/astronomy-growth/brief.md`, `runs/astronomy-growth/metrics.json`.\n\nОблік викликів інструментів: 5 викликів `functions.exec`; інших викликів інструментів у цьому завданні не було. Токени та вартість виконання не надані.\n"
+      },
+      {
+        "case": "merged-replay",
+        "artifact_check": "passed",
+        "criterion": "volume",
+        "http_requests": 0,
+        "pdf_pages": 1,
+        "metrics_match": true,
+        "cache_inside_case": true,
+        "command_journal": "# Журнал офлайн-відтворення\n\nРобоча директорія: `merged-replay`. Мережевий доступ для дослідження не використовувався.\n\n1. `pwd && ls -la && cat SKILL.md` — прочитано основні інструкції навички.\n2. `cat README.md && cat references/methodology.md && find examples/astronomy-uk-cs -maxdepth 3 -type f -print` — прочитано інструкції запуску, методологію й перелік файлів джерельного дослідження.\n3. `mkdir -p runs && .venv/bin/python scripts/wiki_interest.py replay --run examples/astronomy-uk-cs --out runs/replayed` — відтворено дослідження з локальних збережених відповідей; статус `complete_with_warnings`, 0 HTTP-запитів.\n4. `cat runs/replayed/brief.md && ls -lh runs/replayed/brief.pdf runs/replayed/trend.png runs/replayed/brief.md runs/replayed/metrics.json && python - <<'PY' ...` — перевірено короткий звіт і наявність артефактів; графік PNG 1278×621, PDF 118031 байт.\n\nВиклики інструментів: 4. Прочитані документи: `SKILL.md`, `README.md`, `references/methodology.md`. Джерельний пакет дослідження: `examples/astronomy-uk-cs/` (маніфест, метрики, CSV та збережені відповіді). Токени/вартість у звіті виконання не надавалися.\n"
+      },
+      {
+        "case": "split-ranking",
+        "artifact_check": "passed",
+        "criterion": "growth",
+        "http_requests": 0,
+        "pdf_pages": 1,
+        "metrics_match": true,
+        "cache_inside_case": false,
+        "command_journal": "# Журнал сесії\n\nУсі команди виконувалися з директорії skill; мережеве завантаження не використовувалося.\n\n1. `pwd && rg --files -g 'SKILL.md' -g '*.md' -g '*.py' -g '*.json' -g '*.csv' -g '*.tsv' -g '*.yaml' -g '*.yml'` — перелік потрібних матеріалів у дозволеному дереві.\n2. `cat SKILL.md && cat README.md && cat references/methodology.md && cat references/mvp.md && cat references/evaluation.md` — прочитано інструкції та посилання на методику.\n3. `cat references/methodology.md && cat examples/astronomy-uk-cs/manifest.json && cat examples/astronomy-uk-cs/metrics.json && cat examples/astronomy-uk-cs/brief.md && cat scripts/wiki_interest.py` — перевірено дані прикладу та команду revise.\n4. `.venv/bin/python scripts/wiki_interest.py revise --run examples/astronomy-uk-cs --criterion growth --offline --out runs/astronomy-growth` — створено новий run; HTTP-запити: 0.\n5. `sed -n '1,160p' runs/astronomy-growth/brief.md && cat runs/astronomy-growth/manifest.json` — перевірено короткий звіт, критерій та статистику запитів.\n6. `sed -n '1,240p' scripts/report.py && sed -n '1,240p' scripts/analysis.py` — звірено формулювання стабільності й ранжування з реалізацією.\n"
+      },
+      {
+        "case": "split-replay",
+        "artifact_check": "passed",
+        "criterion": "volume",
+        "http_requests": 0,
+        "pdf_pages": 1,
+        "metrics_match": true,
+        "cache_inside_case": true,
+        "command_journal": "# Журнал відтворення\n\nРежим: офлайн replay з пакета `examples/astronomy-uk-cs`; мережевих запитів не виконувалося.\n\n## Команди\n\n```bash\npwd && rg --files -g 'SKILL.md' -g '*.md' -g '*.json' -g '*.csv' -g '*.py' -g '*.pdf' -g '*.png' -g '*.tsv' -g '*.ipynb'\ncat SKILL.md && cat examples/astronomy-uk-cs/manifest.json && cat examples/astronomy-uk-cs/metrics.json && cat examples/astronomy-uk-cs/brief.md && cat examples/astronomy-uk-cs/sources.json\ncat references/methodology.md && cat README.md && .venv/bin/python scripts/wiki_interest.py replay --help\n.venv/bin/python scripts/wiki_interest.py replay --run examples/astronomy-uk-cs --out runs/astronomy-uk-cs-replayed\nfile runs/astronomy-uk-cs-replayed/brief.pdf runs/astronomy-uk-cs-replayed/trend.png\n```\n\n## Документи, прочитані повністю\n\n- `SKILL.md`\n- `README.md`\n- `references/methodology.md`\n- `examples/astronomy-uk-cs/manifest.json`\n- `examples/astronomy-uk-cs/metrics.json`\n- `examples/astronomy-uk-cs/brief.md`\n- `examples/astronomy-uk-cs/sources.json`\n\n`replay --help` також прочитано. JSON-відповіді джерел, CSV і бінарні приклади PDF/PNG не розгорталися в контекст; replay перевірив хеші пакета й використав джерела для перерахунку.\n"
+      }
+    ],
+    "outcome": "All four artifact sets verified. Both replay agents delivered grounded final responses. Ranking final responses unavailable after interruption; split-ranking reported usage limit.",
+    "limitations": [
+      "One attempt per variant/scenario; no statistical conclusion.",
+      "Identical general README available to both variants for mentors.",
+      "Both ranking runs reused an inherited cache outside the case directory: cache isolation was not achieved.",
+      "Usage and cost not available; self-reported tool counts differ in counting convention and are not compared.",
+      "Runtime and dependency setup preprovided; Docker not evaluated."
+    ],    "decision": "Retain README.md, SKILL.md and references/methodology.md. No observed need to restore four reference files; no claim of proven superiority.",
+    "navigation": {
+      "split_replay": [
+        "SKILL.md",
+        "README.md",
+        "references/methodology.md"
+      ],
+      "merged_replay": [
+        "SKILL.md",
+        "README.md",
+        "references/methodology.md"
+      ],
+      "split_ranking": [
+        "SKILL.md",
+        "README.md",
+        "references/methodology.md",
+        "references/mvp.md",
+        "references/evaluation.md"
+      ],
+      "merged_ranking": [
+        "SKILL.md",
+        "README.md",
+        "references/methodology.md"
+      ]
+    }
+  },
+  "interactive_update_2026_09_27": {
+    "model": "gpt-6-luna",
+    "execution": "One independent agent scenario using the installed skill and real offline CLI; not OpenRouter or Docker.",
+    "prompt": "Compare interest in astronomy in Ukraine and Czechia using the saved astronomy-uk-cs study, and produce a short report.",
+    "observed": {
+      "report_created": true,
+      "numbers_match_metrics": true,
+      "language_country_limitation_explicit": true,
+      "unsupported_causal_claims": false,
+      "http_requests": 0
+    },
+    "limitations": [
+      "Saved study already identifies the language pair; this scenario did not exercise a model clarification.",
+      "The answer omitted a specific next product experiment and an explicit final-12-versus-previous-12 definition.",
+      "No OpenRouter API key was available; live Haiku and Docker were not tested."
+    ],
+    "runner_check": {
+      "command": "python -m unittest discover -s tests -p test_interactive_runner.py -v",
+      "tests": 1,
+      "passed": true,
+      "model_http": "mocked",
+      "research_cli": "real offline replay",
+      "checks": [
+        "clarification followed by stdin reply",
+        "history retained",
+        "matching metrics and one-page PDF",
+        "blank input ignored and /exit ends session"
+      ]
+    }
   }
 }

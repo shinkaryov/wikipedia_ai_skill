@@ -13,7 +13,7 @@ If the host provides `wiki_cli` and installed dependencies, skip setup and call 
 
 ## Workflow
 
-1. Identify the topic, languages and period. If languages are missing, ask. Default to the last 24 **complete UTC months** and criterion `balanced`; state these assumptions. Do not silently turn a language into a country or a broad subject into learning/purchase intent.
+1. Identify the topic, languages and period. If languages are missing, ask. Default to the last 24 **complete UTC months** and criterion `balanced`; state these assumptions and proceed without asking the user to confirm defaults. Ask only for missing scope that materially changes the study. Do not silently turn a language into a country or a broad subject into learning/purchase intent.
 2. Discover the concept:
 
    ```bash
@@ -31,7 +31,7 @@ If the host provides `wiki_cli` and installed dependencies, skip setup and call 
 4. Handle gaps honestly. No sitelink means an unmeasured audience, not zero demand. If needed, use `search-pages --topic "local topic phrase" --language pl`. A search result is only a candidate. A manual `--page 'pl:Exact title'` requires a meaningful `--scope-note`; explain the changed scope and never present it as a proven equivalent. Do not silently substitute a broader page. Do not claim a report succeeded if status is `error` or `report_failed`.
 5. Explain the result in the user's language: direction and volume, normalized direction, stability reasons, and a specific next product experiment. Quote numbers directly from returned metrics. Explicitly describe YoY as the final 12 months versus the preceding 12; it is not a first-to-last-month change over two years. Mention missing languages and conflicting signals. `consistent` describes the selected series, **not** a probability, market demand or forecast. Recommend further research, not an automatic launch.
    Keep these interpretation rules in the final answer:
-   - Name the measured language editions. A country request requires clarification or an explicit, limited language-proxy assumption; English views do not measure US residents, nor Ukrainian views all Ukrainian residents.
+   - Name the measured language editions. A country request requires clarification or an explicit, limited language-proxy assumption; English views do not measure US residents, nor Ukrainian views all Ukrainian residents. Do not claim an edition is read primarily by residents of any country: these data contain no reader geography. When only countries are supplied, ask one concise question proposing language editions and explaining the limitation; do not also ask to confirm the default period.
    - `normalized_yoy_pct` compares the article's share of total pageviews in its language edition between the two years. It does not adjust for population, unique readers or market size.
    - `peak_share_pct` is the largest month's share of this article's final 12-month views, not a share of all articles on the topic.
    - Describe observed patterns without inferring causes such as news, war, publishing activity or national interests. If the user requests hypotheses, label them untested and specify evidence needed to check them. Similar normalized changes do not establish similar market dynamics.

@@ -127,7 +127,7 @@ The optional OpenRouter runner requires a tool-capable model and a key in `.env`
 uv run --env-file .env --frozen python scripts/evaluate_openrouter.py --model anthropic/claude-haiku-4.5 --scenario astronomy --out runs/openrouter-astronomy
 ```
 
-To run your own request, replace `--scenario astronomy` with `--prompt "Your research question"`; repeat `--prompt` for follow-ups.
+To run your own request, replace `--scenario astronomy` with `--prompt "Your research question"`; repeat `--prompt` for follow-ups. Add `--interactive` to answer questions and continue in the terminal (`/exit` or Ctrl+D to finish; Docker also needs `-it`). History and cache are kept within that running session.
 
 The runner makes at most three attempts on HTTP 429/5xx, respecting `Retry-After`; waits above 60 seconds are returned to the caller. Other HTTP errors fail immediately with provider details when available.
 

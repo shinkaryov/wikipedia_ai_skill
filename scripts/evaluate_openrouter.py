@@ -57,6 +57,7 @@ def execute_tool(name, arguments, output):
     process = subprocess.run([sys.executable, str(ROOT / "scripts/wiki_interest.py"), *argv], cwd=ROOT, capture_output=True, text=True, timeout=300)
     return {"argv": argv, "returncode": process.returncode, "stdout": process.stdout[-30000:], "stderr": process.stderr[-3000:]}
 
+
 def completion(model, messages, key):
     body = {"model": model, "messages": messages, "tools": TOOLS, "tool_choice": "auto", "max_tokens": 3000, "provider": {"require_parameters": True}}
     req = urllib.request.Request("https://openrouter.ai/api/v1/chat/completions", data=json.dumps(body).encode(), headers={"Content-Type": "application/json", "Authorization": "Bearer " + key, "X-Title": "WikiInterestResearch-Evaluation"})
@@ -107,8 +108,33 @@ def completion(model, messages, key):
         raise ResearchError("model_response_error", "No model completion received.")
     return value
 
+def read_user_message():
+    """Read valid UTF-8; reject damaged input before saving history."""
+    while True:
+        print("You (/exit to finish): ", end="", file=sys.stderr, flush=True)
+        try:
+            if hasattr(sys.stdin, "buffer"):
+                line = sys.stdin.buffer.readline().decode("utf-8", errors="strict")
+            else:
+                line = sys.stdin.readline()
+            line.encode("utf-8", errors="strict")
+        except UnicodeError:
+            print(
+                "Input contains invalid UTF-8. Please type your reply again.",
+                file=sys.stderr,
+                flush=True,
+            )
+            continue
+        except KeyboardInterrupt:
+            print(file=sys.stderr)
+            return None
+        if not line or line.strip().lower() == "/exit":
+            return None
+        if line.strip():
+            return line.strip()
 
-def run(model, prompts, output, max_turns):
+
+def run(model, prompts, output, max_turns, interactive=False):
     key = os.getenv("OPENROUTER_API_KEY")
     if not key:
         raise ResearchError("missing_model_key", "Set OPENROUTER_API_KEY in your local environment, never in the skill or chat.")
@@ -122,12 +148,14 @@ def run(model, prompts, output, max_turns):
               "Skip environment setup and do not read README.md for research; use methodology.md only when needed. "
               "Distinguish language editions from countries and observed trends from unsupported causes. "
               "Reply concisely with grounded findings and output paths.\n\n" + (ROOT / "SKILL.md").read_text())
+    prompts = list(prompts)
     messages = [{"role": "system", "content": system}]
-    trace = {"requested_model": model, "started_at": now(), "prompts": prompts, "events": [], "status": "running"}
+    trace = {"requested_model": model, "started_at": now(), "prompts": prompts, "interactive": interactive, "events": [], "status": "running"}
     t0 = time.monotonic()
     try:
-        for prompt in prompts:
+        for index, prompt in enumerate(prompts):
             messages.append({"role": "user", "content": prompt})
+            dump(output / "trace.json", trace)
             for _ in range(max_turns):
                 response = completion(model, messages, key)
                 raw = response["choices"][0]["message"]
@@ -138,6 +166,8 @@ def run(model, prompts, output, max_turns):
                 trace["events"].append({"type": "model", "model": response.get("model"), "generation_id": response.get("id"), "usage": response.get("usage"), "message": visible})
                 dump(output / "trace.json", trace)
                 if not message.get("tool_calls"):
+                    if interactive:
+                        print("\nAssistant: " + (message.get("content") or "[No text response]"), file=sys.stderr, flush=True)
                     break
                 for call in message["tool_calls"]:
                     try:
@@ -150,7 +180,14 @@ def run(model, prompts, output, max_turns):
                     dump(output / "trace.json", trace)
             else:
                 raise ResearchError("turn_limit", "Evaluation exceeded its model-turn budget.")
+            if interactive and index + 1 == len(prompts):
+                follow_up = read_user_message()
+                if follow_up is not None:
+                    prompts.append(follow_up)
         trace["status"] = "completed"
+    except KeyboardInterrupt:
+        trace["status"] = "interrupted"
+        raise
     except Exception as exc:
         trace["status"] = "failed"
         trace["error"] = exc.as_dict() if isinstance(exc, ResearchError) else str(exc)
@@ -167,6 +204,7 @@ def main():
     source = parser.add_mutually_exclusive_group()
     source.add_argument("--scenario", help="Named scenario; defaults to astronomy when --prompt is absent")
     source.add_argument("--prompt", action="append", help="Custom request; repeat for sequential follow-ups in the same conversation")
+    parser.add_argument("--interactive", action="store_true", help="Read clarifications and follow-ups from stdin; /exit or EOF finishes")
     parser.add_argument("--out", required=True)
     parser.add_argument("--max-turns", type=int, default=10)
     args = parser.parse_args()
@@ -177,13 +215,19 @@ def main():
             prompts = [prompt.strip() for prompt in args.prompt]
             if any(not prompt for prompt in prompts):
                 raise ResearchError("empty_prompt", "Each --prompt must contain a nonempty request.")
+        elif args.interactive and args.scenario is None:
+            first_prompt = read_user_message()
+            if first_prompt is None:
+                print(json.dumps({"status": "cancelled"}))
+                return 0
+            prompts = [first_prompt]
         else:
             scenarios = load(ROOT / "examples/agent_scenarios.json")
             scenario = args.scenario or "astronomy"
             if scenario not in scenarios:
                 raise ResearchError("unknown_scenario", "Choose a known scenario or use --prompt.", available=list(scenarios))
             prompts = scenarios[scenario]
-        result = run(args.model, prompts, args.out, args.max_turns)
+        result = run(args.model, prompts, args.out, args.max_turns, interactive=args.interactive)
         trace = load(result["trace"])
         result["answers"] = [
             event["message"]["content"]
@@ -194,6 +238,9 @@ def main():
         ]
         print(json.dumps(result, ensure_ascii=False, indent=2))
         return 0
+    except KeyboardInterrupt:
+        print(json.dumps({"status": "interrupted"}))
+        return 130
     except ResearchError as exc:
         print(json.dumps({"status": "error", "error": exc.as_dict()}, ensure_ascii=False))
         return 2
